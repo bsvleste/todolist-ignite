@@ -6,7 +6,7 @@ export interface ButtonIconProps {
     children: ReactNode
 }
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    size?: 'sm' | 'md' | 'lg',    
+    size?: 'sm' | 'md' | 'lg',
     children: ReactNode,
     className?: string
 }
@@ -18,20 +18,21 @@ function ButtonIcon({ children }: ButtonIconProps) {
         </Slot>
     )
 }
-function ButtonRoot({size="md",children,className,...props}:ButtonProps){
-        return(
-            <button className={clsx(
-                'flex  justify-center items-center gap-2 transition-colors ',
-                {
-                    'w-6 h-6 rounded hover:bg-gray-400 hover:text-danger': size === 'sm',
-                    'w-24 h-14 bg-blue-dark  hover:bg-blue rounded-lg disabled:bg-blue-dark disabled:cursor-not-allowed': size === 'md',
-                   
-                },
-                className)}{...props}>
-                {children}
-            </button>
-        )
-    }
+function ButtonRoot({ size = "md", children, className, ...props }: ButtonProps) {
+    return (
+        <button className={clsx(
+            'flex  justify-center items-center gap-2 transition-colors ',
+            {
+                'w-6 h-6 rounded hover:bg-gray-400 hover:text-danger': size === 'sm',
+                'w-24 h-14 bg-blue-dark  hover:bg-blue rounded-lg disabled:bg-blue-dark disabled:cursor-not-allowed': size === 'md',
+                'w-full h-14 bg-blue-dark  hover:bg-blue rounded-lg disabled:bg-blue-dark disabled:cursor-not-allowed': size === 'lg',
+
+            },
+            className)}{...props}>
+            {children}
+        </button>
+    )
+}
 
 ButtonRoot.displayName = "ButtonRoot.Root"
 ButtonIcon.displayName = "ButtonRoot.Icon"
