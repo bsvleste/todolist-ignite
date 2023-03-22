@@ -1,5 +1,4 @@
-
-export function Logo(props:any) {
+export function Logo(props: any) {
   return (
     <svg
       width={126}
@@ -39,5 +38,3 @@ export function Logo(props:any) {
     </svg>
   )
 }
-
-
