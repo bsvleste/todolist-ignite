@@ -39,9 +39,6 @@ export function Signup() {
         data.email,
         data.password,
       ).catch((err) => console.log(err))
-      await sendEmailVerification(auth.currentUser).catch((err) =>
-        console.log(err),
-      )
       await updateProfile(auth.currentUser, { displayName: data.name }).catch(
         (err) => console.log(err),
       )
