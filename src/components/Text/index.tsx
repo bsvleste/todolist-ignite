@@ -8,6 +8,7 @@ export interface TextProps {
   asChild?: boolean
   className?: string
   isDone?: boolean
+  errorMessage?: boolean
 }
 
 export function Text({
@@ -16,6 +17,7 @@ export function Text({
   asChild,
   className,
   isDone = false,
+  errorMessage = false,
 }: TextProps) {
   const Comp = asChild ? Slot : 'span'
   return (
@@ -27,6 +29,7 @@ export function Text({
           'text-md': size === 'md',
           'text-lg': size === 'lg',
           'line-through': isDone,
+          'text-danger': errorMessage,
         },
         className,
       )}

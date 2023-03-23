@@ -1,17 +1,13 @@
 import { PlusCircle } from 'phosphor-react'
-import { ChangeEvent, FormEvent, HtmlHTMLAttributes, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 import { Button } from '../Button'
 import { Task } from '../Task'
 import { Text } from '../Text'
 import { TextInput } from '../TextInput'
 import { TodoEmpty } from '../TodoEmpty'
 
-interface TodoProps {
-  tasks: String[]
-}
-
 export function Todo() {
-  const [tasks, setTasks] = useState([])
+  const [tasks, setTasks] = useState<any>([])
   const [newTask, setNewTask] = useState('')
   const [countTaskIsDone, setCountTaskIsDone] = useState(0)
   const isInputTaskIsEmpty = newTask.length === 0
@@ -26,7 +22,7 @@ export function Todo() {
   }
   function deleteTask(taskToDelete: string) {
     // imutabilidade => as variáveis não sofrem mutação, nós criamos um novo valor (um novo espaço na memória)
-    const taskWithoutDeleteOne = tasks.filter((task) => {
+    const taskWithoutDeleteOne = tasks.filter((task: any) => {
       return task !== taskToDelete
     })
     setTasks(taskWithoutDeleteOne)
@@ -79,9 +75,9 @@ export function Todo() {
       </div>
       <div className="mt-6 mb-10 border-t-[1px] border-gray-400 rounded">
         {isTaskEmpty && <TodoEmpty />}
-        {tasks.map((task) => (
+        {tasks.map((task: any, index: any) => (
           <Task
-            key={task}
+            key={index}
             task={task}
             onDeleteTask={deleteTask}
             onCountTaskDone={countTaskDones}

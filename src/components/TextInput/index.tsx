@@ -5,13 +5,16 @@ import { Slot } from '@radix-ui/react-slot'
 
 export interface TextInputRootsProps {
   children: ReactNode
+  erros?: boolean
 }
 export interface TextInputIconProps
   extends InputHTMLAttributes<HTMLInputElement> {
   children: ReactNode
 }
 export interface TextInputInputProps
-  extends InputHTMLAttributes<HTMLInputElement> { }
+  extends InputHTMLAttributes<HTMLInputElement> {
+
+}
 
 function TextInputRoot(props: TextInputRootsProps) {
   return (
@@ -19,6 +22,9 @@ function TextInputRoot(props: TextInputRootsProps) {
       className={clsx(
         'flex items-center gap-3 py-4 px-3 h-14 rounded-lg w-full bg-gray-500',
         'focus-within:ring-1 ring-gray-500',
+        {
+          'border-2 border-danger': props.erros === true
+        }
       )}
     >
       {props.children}
@@ -37,6 +43,7 @@ const TextInputInput = forwardRef((props: TextInputInputProps, ref) => {
       ref={ref}
       className={clsx(
         'bg-transparent flex-1 outline-none text-gray-100 text-sx placeholder:text-gray-300 focus:text-gray-100 ',
+
       )}
       {...props}
     />
@@ -54,7 +61,7 @@ const TextInputInput = forwardRef((props: TextInputInputProps, ref) => {
 // }
 TextInputRoot.displayName = 'TextInput.Root'
 TextInputIcon.displayName = 'TextInput.Icon'
-TextInputInput.displaName = 'TextInput.Input'
+TextInputInput.displayName = 'TextInput.Input'
 export const TextInput = {
   Root: TextInputRoot,
   Input: TextInputInput,

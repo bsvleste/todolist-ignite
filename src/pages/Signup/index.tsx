@@ -3,11 +3,35 @@ import { useForm } from 'react-hook-form'
 import { Button } from '../../components/Button'
 import { Text } from '../../components/Text'
 import { TextInput } from '../../components/TextInput'
-
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+const signupRegisterForm = z.object({
+  name: z
+    .string()
+    .min(3, { message: 'O nome precisa ter pelo menos 3 letras' })
+    .nonempty('O email é obrigatorio'),
+  email: z.string().email().nonempty('O email é obrigatorio'),
+  password: z
+    .string()
+    .nonempty('A senha é obrigatoria')
+    .min(8, { message: 'A senha tem que ter no minimo 8 caracteres' }),
+})
+type SignupFormData = z.infer<typeof signupRegisterForm>
 export function Signup() {
-  const { register, handleSubmit } = useForm()
-  function handleCreateUser(data: any) {
-    console.log(data)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isValid },
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupRegisterForm),
+    mode: 'onChange',
+  })
+  function handleCreateUser(data: SignupFormData) {
+    try {
+      console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
   }
   return (
     <div className="flex justify-center items-center flex-col h-screen ">
@@ -16,7 +40,13 @@ export function Signup() {
         onSubmit={handleSubmit(handleCreateUser)}
         className="flex justify-center items-start flex-col gap-4 max-w-md w-11/12 h-[500px] px-4 bg-gray-400  mx-3 rounded-lg"
       >
-        <Text>Name</Text>
+        {errors.name ? (
+          <Text size="sm" errorMessage={true}>
+            {errors.name?.message}
+          </Text>
+        ) : (
+          <Text>Name</Text>
+        )}
         <TextInput.Root>
           <TextInput.Input
             placeholder="Digite o seu nome"
@@ -24,7 +54,13 @@ export function Signup() {
             autoComplete="off"
           />
         </TextInput.Root>
-        <Text>Email</Text>
+        {errors.email ? (
+          <Text size="sm" errorMessage={true}>
+            {errors.email?.message}
+          </Text>
+        ) : (
+          <Text>Email</Text>
+        )}
         <TextInput.Root>
           <TextInput.Input
             autoComplete="off"
@@ -32,8 +68,14 @@ export function Signup() {
             {...register('email')}
           />
         </TextInput.Root>
-        <Text>Password</Text>
-        <TextInput.Root>
+        {errors.password ? (
+          <Text size="sm" errorMessage={true}>
+            {errors.password?.message}
+          </Text>
+        ) : (
+          <Text>Password</Text>
+        )}
+        <TextInput.Root erros={!!errors.password}>
           <TextInput.Input
             autoComplete="off"
             placeholder="********************"
@@ -42,7 +84,7 @@ export function Signup() {
           />
         </TextInput.Root>
 
-        <Button.Root size="lg">
+        <Button.Root size="lg" disabled={!isValid || isSubmitting}>
           <Text>Criar</Text>
           <Button.Icon>
             <PaperPlaneTilt />

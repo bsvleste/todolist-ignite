@@ -23,7 +23,7 @@ function ButtonRoot({
   return (
     <button
       className={clsx(
-        'flex  justify-center items-center gap-2 transition-colors ',
+        'flex  justify-center items-center gap-2 transition-colors disabled:opacity-50 ',
         {
           'w-6 h-6 rounded hover:bg-gray-400 hover:text-danger': size === 'sm',
           'w-24 h-14 bg-blue-dark  hover:bg-blue rounded-lg disabled:bg-blue-dark disabled:cursor-not-allowed':
