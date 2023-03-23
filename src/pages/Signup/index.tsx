@@ -5,6 +5,12 @@ import { Text } from '../../components/Text'
 import { TextInput } from '../../components/TextInput'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { auth } from '../../utils/firebaseConfig'
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  updateProfile,
+} from 'firebase/auth'
 const signupRegisterForm = z.object({
   name: z
     .string()
@@ -26,11 +32,22 @@ export function Signup() {
     resolver: zodResolver(signupRegisterForm),
     mode: 'onChange',
   })
-  function handleCreateUser(data: SignupFormData) {
+  async function handleCreateUser(data: SignupFormData) {
     try {
-      console.log(data)
-    } catch (error) {
-      console.log(error)
+      await createUserWithEmailAndPassword(
+        auth,
+        data.email,
+        data.password,
+      ).catch((err) => console.log(err))
+      await sendEmailVerification(auth.currentUser).catch((err) =>
+        console.log(err),
+      )
+      await updateProfile(auth.currentUser, { displayName: data.name }).catch(
+        (err) => console.log(err),
+      )
+      console.log(auth.currentUser)
+    } catch (err) {
+      console.log(err)
     }
   }
   return (
