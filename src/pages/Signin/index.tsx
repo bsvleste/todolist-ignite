@@ -94,9 +94,13 @@ export function Signin() {
               <PaperPlaneTilt />
             </Button.Icon>
           </Button.Root>
-          <div className="mt-4 text-sm">
+
+          <div className="mt-4 text-sm flex justify-between w-full  ">
             <a href="/signup" className="text-blue">
               Crie uma conta
+            </a>
+            <a href="/todo" className="text-gray-700">
+              Accesar sem conta
             </a>
           </div>
         </div>
