@@ -6,11 +6,7 @@ import { TextInput } from '../../components/TextInput'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { auth } from '../../utils/firebaseConfig'
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-  updateProfile,
-} from 'firebase/auth'
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 const signupRegisterForm = z.object({
   name: z
     .string()
