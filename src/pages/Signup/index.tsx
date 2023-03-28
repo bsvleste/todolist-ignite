@@ -30,16 +30,6 @@ export function Signup() {
     mode: 'onChange',
   })
 
-  async function handlerCreateTask(name: string, id: string) {
-    try {
-      doc(collection(firestore, id))
-      /*  await setDoc(doc(firestore, name, id), {}) */
-      // console.log('Document written with ID: ', docRef.id)
-    } catch (e) {
-      console.error('Error adding document: ', e)
-    }
-  }
-
   async function handleCreateUser(data: SignupFormData) {
     try {
       await createUserWithEmailAndPassword(
@@ -50,8 +40,6 @@ export function Signup() {
       await updateProfile(auth.currentUser, { displayName: data.name }).catch(
         (err) => console.log(err),
       )
-      await handlerCreateTask(data.name, auth.currentUser.uid)
-      // console.log(auth.currentUser)
     } catch (err) {
       console.log(err)
     }
