@@ -25,7 +25,7 @@ export function Task({ task, onDeleteTask, onCountTaskDone }: TaskProps) {
         <Checkbox onCheckedChange={handleCountTaskDone} />
       </div>
       <div className="w-full">
-        <Text isDone={taskIsDone}>{task}</Text>
+        <Text isDone={taskIsDone}>{task.task}</Text>
       </div>
       <Button.Root
         size="sm"

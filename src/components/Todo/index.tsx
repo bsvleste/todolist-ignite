@@ -1,4 +1,4 @@
-import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore'
+import { addDoc, collection, onSnapshot } from 'firebase/firestore'
 import { PlusCircle } from 'phosphor-react'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { firestore } from '../../utils/firebaseConfig'
@@ -17,15 +17,20 @@ export function Todo() {
   const isTaskEmpty = tasks.length === 0
   const { id, nome } = JSON.parse(localStorage.getItem('@apptodo:credential'))
 
-  function handleCreateTask(event: FormEvent) {
+  async function handleCreateTask(event: FormEvent) {
     event.preventDefault()
-    setTasks([...tasks, newTask])
+    // criar aqui logica para cadastrar nova task
+    const createNewTask = await addDoc(collection(firestore, id), {
+      task: newTask,
+    })
+    console.log(`Create new Task:${createNewTask.id}`)
+    /*  setTasks([...tasks, newTask])
+     */
     setNewTask('')
     console.log(tasks)
   }
-  function handleCreateNewTask(event: ChangeEvent<HTMLInputElement>) {
+  async function handleCreateNewTask(event: ChangeEvent<HTMLInputElement>) {
     setNewTask(event.target.value)
-    // criar aqui logica para cadastrar nova task
   }
   function deleteTask(taskToDelete: string) {
     // imutabilidade => as variáveis não sofrem mutação, nós criamos um novo valor (um novo espaço na memória)
@@ -45,35 +50,38 @@ export function Todo() {
     setLocalStorage(JSON.parse(local))
   } */
   async function getdados() {
-    /* const docRef = doc(firestore, nome, id)
-    const docSnap = await getDoc(docRef) */
-    onSnapshot(doc(firestore, nome, id), (docs) => {
-      // console.log(docs.data())
-      setTasks(docs.data().tarefa)
-      /*  console.log('Datas real time', doc.data())
-      setTasks(doc.data()) */
+    onSnapshot(collection(firestore, id), (snapShot) => {
+      // snapShot.docs.map((doc) => console.log(doc.data()))
+      setTasks(snapShot.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
     })
+    /* const docRef = doc(firestore, nome, id)
+  const docSnap = await getDoc(docRef) */
+    /*  onSnapshot(doc(firestore, nome, id), (docs) => {
+     // console.log(docs.data())
+     setTasks(docs.data().tarefa)
+     /*  console.log('Datas real time', doc.data())
+     setTasks(doc.data()) */
+    // })
     // setTasks(docSnap.data())
     // setTasks(docSnap.data())
-    console.log(tasks)
     // tasks.task.map((tak) => console.log(tak))
   }
   useEffect(() => {
     /*  getLocalStorage()
-    console.log(localStorage) */
+console.log(localStorage) */
     // console.log(tasks)
     getdados()
   }, [])
 
   /* useEffect(
-    () => {
+() => {
 
-      
-    } */
+  
+} */
   /* onSnapshot(collection(firestore, nome) , (snapshot) => {
-      snapshot.docs.map((doc) => console.log(doc.data()))
-      // return setTasks(snapshot.docs.map((doc) => ({ ...doc.data() })))
-    }), */
+  snapshot.docs.map((doc) => console.log(doc.data()))
+  // return setTasks(snapshot.docs.map((doc) => ({ ...doc.data() })))
+}), */
   /*  [], {} */
   // )
   return (
