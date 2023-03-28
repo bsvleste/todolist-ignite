@@ -5,8 +5,9 @@ import { Text } from '../../components/Text'
 import { TextInput } from '../../components/TextInput'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { auth } from '../../utils/firebaseConfig'
+import { auth, firestore } from '../../utils/firebaseConfig'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 const signupRegisterForm = z.object({
   name: z
     .string()
@@ -28,6 +29,16 @@ export function Signup() {
     resolver: zodResolver(signupRegisterForm),
     mode: 'onChange',
   })
+
+  async function handlerCreateTask(name: string, id: string) {
+    try {
+      await setDoc(doc(firestore, name, id), {})
+      // console.log('Document written with ID: ', docRef.id)
+    } catch (e) {
+      console.error('Error adding document: ', e)
+    }
+  }
+
   async function handleCreateUser(data: SignupFormData) {
     try {
       await createUserWithEmailAndPassword(
@@ -38,7 +49,8 @@ export function Signup() {
       await updateProfile(auth.currentUser, { displayName: data.name }).catch(
         (err) => console.log(err),
       )
-      console.log(auth.currentUser)
+      await handlerCreateTask(data.name, auth.currentUser.uid)
+      // console.log(auth.currentUser)
     } catch (err) {
       console.log(err)
     }
@@ -59,7 +71,7 @@ export function Signup() {
         )}
         <TextInput.Root>
           <TextInput.Input
-            placeholder="Digite o seu nome"
+            placeholder="Digite o nome da tarefa"
             {...register('name')}
             autoComplete="off"
           />

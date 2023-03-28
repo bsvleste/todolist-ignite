@@ -1,5 +1,7 @@
+import { collection, doc, getDoc, onSnapshot } from 'firebase/firestore'
 import { PlusCircle } from 'phosphor-react'
-import { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import { firestore } from '../../utils/firebaseConfig'
 import { Button } from '../Button'
 import { Task } from '../Task'
 import { Text } from '../Text'
@@ -8,17 +10,22 @@ import { TodoEmpty } from '../TodoEmpty'
 
 export function Todo() {
   const [tasks, setTasks] = useState<any>([])
+  // const [localStorage, setLocalStorage] = useState<any>([])
   const [newTask, setNewTask] = useState('')
   const [countTaskIsDone, setCountTaskIsDone] = useState(0)
   const isInputTaskIsEmpty = newTask.length === 0
   const isTaskEmpty = tasks.length === 0
+  const { id, nome } = JSON.parse(localStorage.getItem('@apptodo:credential'))
+
   function handleCreateTask(event: FormEvent) {
     event.preventDefault()
     setTasks([...tasks, newTask])
     setNewTask('')
+    console.log(tasks)
   }
   function handleCreateNewTask(event: ChangeEvent<HTMLInputElement>) {
     setNewTask(event.target.value)
+    // criar aqui logica para cadastrar nova task
   }
   function deleteTask(taskToDelete: string) {
     // imutabilidade => as variáveis não sofrem mutação, nós criamos um novo valor (um novo espaço na memória)
@@ -34,6 +41,41 @@ export function Todo() {
       setCountTaskIsDone((countTaskIsDone) => countTaskIsDone - 1)
     }
   }
+  /* function getLocalStorage() {
+    setLocalStorage(JSON.parse(local))
+  } */
+  async function getdados() {
+    /* const docRef = doc(firestore, nome, id)
+    const docSnap = await getDoc(docRef) */
+    onSnapshot(doc(firestore, nome, id), (docs) => {
+      // console.log(docs.data())
+      setTasks(docs.data().tarefa)
+      /*  console.log('Datas real time', doc.data())
+      setTasks(doc.data()) */
+    })
+    // setTasks(docSnap.data())
+    // setTasks(docSnap.data())
+    console.log(tasks)
+    // tasks.task.map((tak) => console.log(tak))
+  }
+  useEffect(() => {
+    /*  getLocalStorage()
+    console.log(localStorage) */
+    // console.log(tasks)
+    getdados()
+  }, [])
+
+  /* useEffect(
+    () => {
+
+      
+    } */
+  /* onSnapshot(collection(firestore, nome) , (snapshot) => {
+      snapshot.docs.map((doc) => console.log(doc.data()))
+      // return setTasks(snapshot.docs.map((doc) => ({ ...doc.data() })))
+    }), */
+  /*  [], {} */
+  // )
   return (
     <div className=" mx-3 sm:max-w-3xl sm:m-auto -mt-8 mb-6 sm:-mt-8 sm:mb-6">
       <form action="" onSubmit={handleCreateTask}>

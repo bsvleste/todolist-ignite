@@ -5,10 +5,7 @@ import { Button } from '../../components/Button'
 import { Text } from '../../components/Text'
 import { TextInput } from '../../components/TextInput'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-} from 'firebase/auth'
+import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../utils/firebaseConfig'
 const signinRegisterForm = z.object({
   email: z.string().email().nonempty('O email é obrigatorio'),
@@ -37,6 +34,7 @@ export function Signin() {
         accesToken: userCredential.user.accessToken,
         email: userCredential.user.email,
         nome: userCredential.user.displayName,
+        id: userCredential.user.uid,
       }
       console.log(localStorageCredential)
       localStorage.setItem(
@@ -73,7 +71,7 @@ export function Signin() {
             {errors.password?.message}
           </Text>
         ) : (
-            <Text>Password</Text>
+          <Text>Password</Text>
         )}
         <TextInput.Root erros={!!errors.password}>
           <TextInput.Input
