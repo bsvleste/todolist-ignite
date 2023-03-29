@@ -1,5 +1,5 @@
 import { Trash } from 'phosphor-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '../Button'
 import { Checkbox } from '../Checkbox'
 import { Text } from '../Text'
@@ -19,6 +19,9 @@ export function Task({ task, onDeleteTask, onCountTaskDone }: TaskProps) {
     setTaskIsDone(e)
     onCountTaskDone(e)
   }
+  useEffect(() => {
+    setTaskIsDone(task.task.isDone)
+  }, [task])
   return (
     <div className="bg-gray-500 mb-3 rounded flex  justify-start items-center gap-4 p-4">
       <div>
