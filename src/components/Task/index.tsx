@@ -16,8 +16,8 @@ export function Task({ task, onDeleteTask, onCountTaskDone }: TaskProps) {
     onDeleteTask(task)
   }
   function handleCountTaskDone(e: boolean) {
-    setTaskIsDone(task.task.isDone)
-    onCountTaskDone(task, !taskIsDone)
+    setTaskIsDone(e)
+    onCountTaskDone(task, !e)
   }
   useEffect(() => {
     setTaskIsDone(task.task.isDone)
@@ -25,7 +25,7 @@ export function Task({ task, onDeleteTask, onCountTaskDone }: TaskProps) {
   return (
     <div className="bg-gray-500 mb-3 rounded flex  justify-start items-center gap-4 p-4">
       <div>
-        <Checkbox onCheckedChange={handleCountTaskDone} />
+        <Checkbox onCheckedChange={handleCountTaskDone} checked={taskIsDone} />
       </div>
       <div className="w-full">
         <Text isDone={taskIsDone}>{task.task.description}</Text>

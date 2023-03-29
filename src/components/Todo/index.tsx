@@ -17,24 +17,22 @@ import { TodoEmpty } from '../TodoEmpty'
 
 export function Todo() {
   const [tasks, setTasks] = useState<any>([])
-  // const [localStorage, setLocalStorage] = useState<any>([])
   const [newTask, setNewTask] = useState({})
   const [countTaskIsDone, setCountTaskIsDone] = useState(0)
-  const isInputTaskIsEmpty = newTask.length === 0
+
+  // const isInputTaskIsEmpty = newTask.length === 0
   const isTaskEmpty = tasks.length === 0
-  const { id, email } = JSON.parse(localStorage.getItem('@apptodo:credential'))
+  const { email } = JSON.parse(localStorage.getItem('@apptodo:credential'))
 
   async function handleCreateTask(event: FormEvent) {
     event.preventDefault()
     // criar aqui logica para cadastrar nova task
-    const createNewTask = await addDoc(collection(firestore, email), {
+    await addDoc(collection(firestore, email), {
       task: newTask,
     })
-    console.log(`Create new Task:${createNewTask.id}`)
-    /*  setTasks([...tasks, newTask])
-     */
+
     setNewTask('')
-    console.log(tasks)
+    /*   console.log(tasks) */
   }
   async function handleCreateNewTask(event: ChangeEvent<HTMLInputElement>) {
     setNewTask({
@@ -47,64 +45,38 @@ export function Todo() {
     const taskWithoutDeleteOne = tasks.filter((task: any) => {
       return task !== taskToDelete
     })
-    // const deletaTasks = doc(firestore, email, taskToDelete.id)
-
-    // Remove the 'capital' field from the document
     await deleteDoc(doc(firestore, email, taskToDelete.id))
 
     setTasks(taskWithoutDeleteOne)
   }
   async function countTaskDones(task: string, isDone: boolean) {
-    // if (count) {
-    //   setCountTaskIsDone((countTaskIsDone) => countTaskIsDone + 1)
-    // } else {
-    //   setCountTaskIsDone((countTaskIsDone) => countTaskIsDone - 1)
-    // }
     const updateTask = doc(firestore, email, task.id)
     await updateDoc(updateTask, {
       // eslint-disable-next-line prettier/prettier
       "task.isDone": !isDone,
     })
-    console.log(isDone, task)
+    /* const countTaskIsDone = tasks.filter(
+      (isDone: any) => isDone.task.isDone === true,
+    )
+    setCountTaskIsDone(countTaskIsDone.length) */
   }
-  /* function getLocalStorage() {
-    setLocalStorage(JSON.parse(local))
-  } */
+
   async function getdados() {
     onSnapshot(collection(firestore, email), (snapShot) => {
       // snapShot.docs.map((doc) => console.log(doc.data()))
       setTasks(snapShot.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
     })
-    /* const docRef = doc(firestore, nome, id)
-  const docSnap = await getDoc(docRef) */
-    /*  onSnapshot(doc(firestore, nome, id), (docs) => {
-     // console.log(docs.data())
-     setTasks(docs.data().tarefa)
-     /*  console.log('Datas real time', doc.data())
-     setTasks(doc.data()) */
-    // })
-    // setTasks(docSnap.data())
-    // setTasks(docSnap.data())
-    // tasks.task.map((tak) => console.log(tak))
   }
   useEffect(() => {
-    /*  getLocalStorage()
-console.log(localStorage) */
-    // console.log(tasks)
     getdados()
   }, [])
+  useEffect(() => {
+    const countTaskIsDone = tasks.filter(
+      (isDone: any) => isDone.task.isDone === true,
+    )
+    setCountTaskIsDone(countTaskIsDone.length)
+  }, [tasks])
 
-  /* useEffect(
-() => {
-
-  
-} */
-  /* onSnapshot(collection(firestore, nome) , (snapshot) => {
-  snapshot.docs.map((doc) => console.log(doc.data()))
-  // return setTasks(snapshot.docs.map((doc) => ({ ...doc.data() })))
-}), */
-  /*  [], {} */
-  // )
   return (
     <div className=" mx-3 sm:max-w-3xl sm:m-auto -mt-8 mb-6 sm:-mt-8 sm:mb-6">
       <form action="" onSubmit={handleCreateTask}>
@@ -116,7 +88,7 @@ console.log(localStorage) */
             />
           </TextInput.Root>
 
-          <Button.Root disabled={isInputTaskIsEmpty}>
+          <Button.Root>
             <Text>Criar</Text>
             <Button.Icon>
               <PlusCircle />
