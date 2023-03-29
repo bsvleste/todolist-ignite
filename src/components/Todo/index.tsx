@@ -17,10 +17,10 @@ import { TodoEmpty } from '../TodoEmpty'
 
 export function Todo() {
   const [tasks, setTasks] = useState<any>([])
-  const [newTask, setNewTask] = useState({})
+  const [newTask, setNewTask] = useState('')
   const [countTaskIsDone, setCountTaskIsDone] = useState(0)
 
-  // const isInputTaskIsEmpty = newTask.length === 0
+  const isInputTaskIsEmpty = Object.keys(newTask).length === 0
   const isTaskEmpty = tasks.length === 0
   const { email } = JSON.parse(localStorage.getItem('@apptodo:credential'))
 
@@ -28,17 +28,14 @@ export function Todo() {
     event.preventDefault()
     // criar aqui logica para cadastrar nova task
     await addDoc(collection(firestore, email), {
-      task: newTask,
+      task: { description: newTask, isDone: false },
     })
-
     setNewTask('')
+
     /*   console.log(tasks) */
   }
   async function handleCreateNewTask(event: ChangeEvent<HTMLInputElement>) {
-    setNewTask({
-      description: event.target.value,
-      isDone: false,
-    })
+    setNewTask(event.target.value)
   }
   async function deleteTask(taskToDelete: string) {
     // imutabilidade => as variáveis não sofrem mutação, nós criamos um novo valor (um novo espaço na memória)
@@ -88,7 +85,7 @@ export function Todo() {
             />
           </TextInput.Root>
 
-          <Button.Root>
+          <Button.Root disabled={isInputTaskIsEmpty}>
             <Text>Criar</Text>
             <Button.Icon>
               <PlusCircle />
