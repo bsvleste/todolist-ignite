@@ -1,4 +1,11 @@
-import { addDoc, collection, onSnapshot } from 'firebase/firestore'
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  updateDoc,
+} from 'firebase/firestore'
 import { PlusCircle } from 'phosphor-react'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { firestore } from '../../utils/firebaseConfig'
@@ -11,16 +18,16 @@ import { TodoEmpty } from '../TodoEmpty'
 export function Todo() {
   const [tasks, setTasks] = useState<any>([])
   // const [localStorage, setLocalStorage] = useState<any>([])
-  const [newTask, setNewTask] = useState('')
+  const [newTask, setNewTask] = useState({})
   const [countTaskIsDone, setCountTaskIsDone] = useState(0)
   const isInputTaskIsEmpty = newTask.length === 0
   const isTaskEmpty = tasks.length === 0
-  const { id, nome } = JSON.parse(localStorage.getItem('@apptodo:credential'))
+  const { id, email } = JSON.parse(localStorage.getItem('@apptodo:credential'))
 
   async function handleCreateTask(event: FormEvent) {
     event.preventDefault()
     // criar aqui logica para cadastrar nova task
-    const createNewTask = await addDoc(collection(firestore, id), {
+    const createNewTask = await addDoc(collection(firestore, email), {
       task: newTask,
     })
     console.log(`Create new Task:${createNewTask.id}`)
@@ -30,27 +37,41 @@ export function Todo() {
     console.log(tasks)
   }
   async function handleCreateNewTask(event: ChangeEvent<HTMLInputElement>) {
-    setNewTask(event.target.value)
+    setNewTask({
+      description: event.target.value,
+      isDone: false,
+    })
   }
-  function deleteTask(taskToDelete: string) {
+  async function deleteTask(taskToDelete: string) {
     // imutabilidade => as variáveis não sofrem mutação, nós criamos um novo valor (um novo espaço na memória)
     const taskWithoutDeleteOne = tasks.filter((task: any) => {
       return task !== taskToDelete
     })
+    // const deletaTasks = doc(firestore, email, taskToDelete.id)
+
+    // Remove the 'capital' field from the document
+    await deleteDoc(doc(firestore, email, taskToDelete.id))
+
     setTasks(taskWithoutDeleteOne)
   }
-  function countTaskDones(count: boolean) {
-    if (count) {
-      setCountTaskIsDone((countTaskIsDone) => countTaskIsDone + 1)
-    } else {
-      setCountTaskIsDone((countTaskIsDone) => countTaskIsDone - 1)
-    }
+  async function countTaskDones(task: string, isDone: boolean) {
+    // if (count) {
+    //   setCountTaskIsDone((countTaskIsDone) => countTaskIsDone + 1)
+    // } else {
+    //   setCountTaskIsDone((countTaskIsDone) => countTaskIsDone - 1)
+    // }
+    const updateTask = doc(firestore, email, task.id)
+    await updateDoc(updateTask, {
+      // eslint-disable-next-line prettier/prettier
+      "task.isDone": !isDone,
+    })
+    console.log(isDone, task)
   }
   /* function getLocalStorage() {
     setLocalStorage(JSON.parse(local))
   } */
   async function getdados() {
-    onSnapshot(collection(firestore, id), (snapShot) => {
+    onSnapshot(collection(firestore, email), (snapShot) => {
       // snapShot.docs.map((doc) => console.log(doc.data()))
       setTasks(snapShot.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
     })
@@ -92,7 +113,6 @@ console.log(localStorage) */
             <TextInput.Input
               placeholder="Digite sua tarefa"
               onChange={handleCreateNewTask}
-              value={newTask}
             />
           </TextInput.Root>
 

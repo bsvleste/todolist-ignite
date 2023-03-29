@@ -7,7 +7,7 @@ import { Text } from '../Text'
 interface TaskProps {
   task: string
   onDeleteTask: (task: string) => void
-  onCountTaskDone: (count: boolean) => void
+  onCountTaskDone: (task: string, idDone: boolean) => void
 }
 
 export function Task({ task, onDeleteTask, onCountTaskDone }: TaskProps) {
@@ -16,8 +16,8 @@ export function Task({ task, onDeleteTask, onCountTaskDone }: TaskProps) {
     onDeleteTask(task)
   }
   function handleCountTaskDone(e: boolean) {
-    setTaskIsDone(e)
-    onCountTaskDone(e)
+    setTaskIsDone(task.task.isDone)
+    onCountTaskDone(task, !taskIsDone)
   }
   useEffect(() => {
     setTaskIsDone(task.task.isDone)
@@ -28,7 +28,7 @@ export function Task({ task, onDeleteTask, onCountTaskDone }: TaskProps) {
         <Checkbox onCheckedChange={handleCountTaskDone} />
       </div>
       <div className="w-full">
-        <Text isDone={taskIsDone}>{task.task}</Text>
+        <Text isDone={taskIsDone}>{task.task.description}</Text>
       </div>
       <Button.Root
         size="sm"
