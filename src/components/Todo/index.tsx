@@ -121,6 +121,7 @@ export function Todo() {
             task={task}
             onDeleteTask={deleteTask}
             onCountTaskDone={countTaskDones}
+            isDone={false}
           />
         ))}
       </div>

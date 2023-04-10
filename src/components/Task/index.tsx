@@ -4,10 +4,17 @@ import { Button } from '../Button'
 import { Checkbox } from '../Checkbox'
 import { Text } from '../Text'
 
+interface Tasks {
+  task: {
+    isDone: boolean
+    description: string
+  }
+}
 interface TaskProps {
-  task: string
-  onDeleteTask: (task: string) => void
-  onCountTaskDone: (task: string, idDone: boolean) => void
+  task: Tasks
+  isDone: boolean
+  onDeleteTask: (task: Tasks) => void
+  onCountTaskDone: (task: Tasks, isDone: boolean) => void
 }
 
 export function Task({ task, onDeleteTask, onCountTaskDone }: TaskProps) {
