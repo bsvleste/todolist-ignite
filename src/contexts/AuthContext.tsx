@@ -5,18 +5,18 @@ import { auth } from '../utils/firebaseConfig'
 type AuthProviderProps = {
   children: ReactNode
 }
-type SignInCredentials = {
-  email: string
-  password: string
-}
+// type SignInCredentials = {
+//   email: string
+//   password: string
+// }
 type UserProps = {
-  email: string
+  email: string | null
   uid: string
 }
 type AuthContextData = {
-  signIn: (credentials: SignInCredentials) => Promise<void>
+  // signIn: (credentials: SignInCredentials) => Promise<void>
   isAuthenticated: boolean
-  user: UserProps
+  user: UserProps | null
 }
 export const AuthContext = createContext({} as AuthContextData)
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -26,9 +26,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     const subscrible = onAuthStateChanged(auth, (userLogged) => {
       if (userLogged) {
-        const uid = userLogged.uid
-        const email = userLogged.email
-        setUser({ uid, email })
+        const data: UserProps | null = {
+          uid: userLogged.uid,
+          email: userLogged.email,
+        }
+
+        setUser(data)
         setIsAuthenticated(true)
       }
     })
