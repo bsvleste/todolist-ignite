@@ -9,6 +9,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: 'sm' | 'md' | 'lg'
   children: ReactNode
   className?: string
+  color?: 'primary' | 'secondary'
 }
 
 function ButtonIcon({ children }: ButtonIconProps) {
@@ -18,6 +19,7 @@ function ButtonRoot({
   size = 'md',
   children,
   className,
+  color = 'primary',
   ...props
 }: ButtonProps) {
   return (
@@ -30,6 +32,7 @@ function ButtonRoot({
             size === 'md',
           'w-full h-14 bg-blue-dark  hover:bg-blue rounded-lg disabled:bg-blue-dark disabled:cursor-not-allowed':
             size === 'lg',
+          'bg-danger hover:bg-danger hover:opacity-90': color === 'secondary',
         },
         className,
       )}

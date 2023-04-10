@@ -1,79 +1,63 @@
-import { signOut } from 'firebase/auth'
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  updateDoc,
-} from 'firebase/firestore'
-import { PlusCircle, SignOut } from 'phosphor-react'
+import { PlusCircle } from 'phosphor-react'
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { auth, firestore } from '../../utils/firebaseConfig'
+import { isAuthenticated } from '../../utils/authenticated'
 import { Button } from '../Button'
-import { Task } from '../Task'
+import { TaskOffLine } from '../TaskOffLine'
 import { Text } from '../Text'
 import { TextInput } from '../TextInput'
 import { TodoEmpty } from '../TodoEmpty'
-export function Todo() {
-  const navigate = useNavigate()
 
-  const [tasks, setTasks] = useState<any>([])
+export function OffLineTodo() {
+  const navigate = useNavigate()
+  const [tasks, setTasks] = useState<string[]>([])
   const [newTask, setNewTask] = useState('')
   const [countTaskIsDone, setCountTaskIsDone] = useState(0)
-
-  const isInputTaskIsEmpty = Object.keys(newTask).length === 0
+  const isInputTaskIsEmpty = newTask.length === 0
   const isTaskEmpty = tasks.length === 0
-  const { email } = JSON.parse(localStorage.getItem('@apptodo:credential')!)
-
-  async function handleLogoof() {
-    signOut(auth)
-    localStorage.removeItem('@apptodo:credential')
-    navigate('/signin')
-  }
-
-  async function handleCreateTask(event: FormEvent) {
+  const myLocalTasks = localStorage.getItem('app:todoListOffLine')
+  function handleCreateTask(event: FormEvent) {
     event.preventDefault()
-
-    await addDoc(collection(firestore, email), {
-      task: { description: newTask, isDone: false },
-    })
+    setTasks((tasks) => [newTask, ...tasks])
     setNewTask('')
   }
-  async function handleCreateNewTask(event: ChangeEvent<HTMLInputElement>) {
+
+  function handleCreateNewTask(event: ChangeEvent<HTMLInputElement>) {
     setNewTask(event.target.value)
   }
-  async function deleteTask(taskToDelete: any) {
-    const taskWithoutDeleteOne = tasks.filter((task: any) => {
+  function deleteTask(taskToDelete: string) {
+    // imutabilidade => as variáveis não sofrem mutação, nós criamos um novo valor (um novo espaço na memória)
+    const taskWithoutDeleteOne = tasks.filter((task) => {
       return task !== taskToDelete
     })
-    await deleteDoc(doc(firestore, email, taskToDelete.id))
-
     setTasks(taskWithoutDeleteOne)
   }
-  async function countTaskDones(task: any, isDone: boolean) {
-    const updateTask = doc(firestore, email, task.id)
-    await updateDoc(updateTask, {
-      'task.isDone': !isDone,
-    })
-  }
-
-  async function getdados() {
-    onSnapshot(collection(firestore, email), (snapShot) => {
-      setTasks(snapShot.docs.map((doc) => ({ ...doc.data(), id: doc.id })))
-    })
+  function countTaskDones(count: boolean) {
+    if (count) {
+      setCountTaskIsDone((countTaskIsDone) => countTaskIsDone + 1)
+    } else {
+      setCountTaskIsDone((countTaskIsDone) => countTaskIsDone - 1)
+    }
   }
   useEffect(() => {
-    getdados()
+    if (myLocalTasks) {
+      setTasks(JSON.parse(myLocalTasks))
+    }
   }, [])
   useEffect(() => {
-    const countTaskIsDone = tasks.filter(
-      (isDone: any) => isDone.task.isDone === true,
-    )
-    setCountTaskIsDone(countTaskIsDone.length)
+    function setLocalStorage() {
+      localStorage.setItem('app:todoListOffLine', JSON.stringify(tasks))
+    }
+    setLocalStorage()
   }, [tasks])
-
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate('/')
+    }
+  }, [])
+  if (isAuthenticated()) {
+    return <h1>isLoading</h1>
+  }
   return (
     <div className=" mx-3 sm:max-w-3xl sm:m-auto -mt-8 mb-6 sm:-mt-8 sm:mb-6">
       <form action="" onSubmit={handleCreateTask}>
@@ -115,22 +99,14 @@ export function Todo() {
       </div>
       <div className="mt-6 mb-10 border-t-[1px] border-gray-400 rounded">
         {isTaskEmpty && <TodoEmpty />}
-        {tasks.map((task: any, index: any) => (
-          <Task
-            key={index}
+        {tasks.map((task) => (
+          <TaskOffLine
+            key={task}
             task={task}
             onDeleteTask={deleteTask}
             onCountTaskDone={countTaskDones}
           />
         ))}
-      </div>
-      <div>
-        <Button.Root color="secondary" onClick={handleLogoof}>
-          <Text>Loggof</Text>
-          <Button.Icon>
-            <SignOut />
-          </Button.Icon>
-        </Button.Root>
       </div>
     </div>
   )

@@ -5,9 +5,12 @@ import { Text } from '../../components/Text'
 import { TextInput } from '../../components/TextInput'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { auth, firestore } from '../../utils/firebaseConfig'
+import { auth } from '../../utils/firebaseConfig'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+
+import { useEffect } from 'react'
+import { isAuthenticated } from '../../utils/authenticated'
+import { useNavigate } from 'react-router-dom'
 const signupRegisterForm = z.object({
   name: z
     .string()
@@ -29,7 +32,7 @@ export function Signup() {
     resolver: zodResolver(signupRegisterForm),
     mode: 'onChange',
   })
-
+  const navigate = useNavigate()
   async function handleCreateUser(data: SignupFormData) {
     try {
       await createUserWithEmailAndPassword(
@@ -37,12 +40,20 @@ export function Signup() {
         data.email,
         data.password,
       ).catch((err) => console.log(err))
-      await updateProfile(auth.currentUser, { displayName: data.name }).catch(
+      await updateProfile(auth.currentUser!, { displayName: data.name }).catch(
         (err) => console.log(err),
       )
     } catch (err) {
       console.log(err)
     }
+  }
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate('/')
+    }
+  }, [])
+  if (isAuthenticated()) {
+    return <h1>isLoading</h1>
   }
   return (
     <div className="flex justify-center items-center flex-col h-screen ">

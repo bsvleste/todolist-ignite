@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app'
 import { getAnalytics } from 'firebase/analytics'
-import { getAuth } from 'firebase/auth'
+import { browserLocalPersistence, getAuth, setPersistence } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getPerformance } from 'firebase/performance'
 import { getStorage } from 'firebase/storage'
@@ -18,5 +18,5 @@ const auth = getAuth()
 const firestore = getFirestore(app)
 const performance = getPerformance(app)
 const storage = getStorage(app)
-
+setPersistence(auth, browserLocalPersistence)
 export { analytics, auth, firestore, performance, storage }
