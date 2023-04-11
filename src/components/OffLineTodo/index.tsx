@@ -31,35 +31,26 @@ export function OffLineTodo() {
     setTasks((tasks) => [createNewTask, ...tasks])
     setNewTask('')
   }
-
   function handleCreateNewTask(description: string) {
     setNewTask(description)
   }
   function deleteTask(taskToDelete: string) {
-    // imutabilidade => as variáveis não sofrem mutação, nós criamos um novo valor (um novo espaço na memória)
-
     setTasks((preveState) =>
       preveState.filter((task) => {
         return task.uuid !== taskToDelete
       }),
     )
   }
-  // function changeTaskIsDone(task: string) {
-  //   const taskIsDone = [...tasks]
-  //   const changeTaskIsDone = taskIsDone.find(
-  //     (changeIsDone) => changeIsDone.uuid === task,
-  //   )
-  //   // setTasks((prevSate) => prevSate.findIndex((e) => { }))
-  //   setCountTaskIsDone(changeTaskIsDone)
-  //   console.log(changeTaskIsDone)
-  //   // taskIsDone.isDone = true
-  //   // setTasks((prevState) => [...prevState, taskIsDone])
-  //   // if (count) {
-  //   //   setCountTaskIsDone((countTaskIsDone) => countTaskIsDone + 1)
-  //   // } else {
-  //   //   setCountTaskIsDone((countTaskIsDone) => countTaskIsDone - 1)
-  //   // }
-  // }
+  function changeTaskIsDone(task: string) {
+    setTasks((prevState) =>
+      prevState.map((changeIsDone) => {
+        if (changeIsDone.uuid === task) {
+          changeIsDone.isDone = !changeIsDone.isDone
+        }
+        return changeIsDone
+      }),
+    )
+  }
   useEffect(() => {
     if (myLocalTasks) {
       setTasks(JSON.parse(myLocalTasks))
@@ -68,6 +59,10 @@ export function OffLineTodo() {
   useEffect(() => {
     function setLocalStorage() {
       localStorage.setItem('app:todoListOffLine', JSON.stringify(tasks))
+      const quantityTaskIsDone = tasks.filter((isDone) => {
+        return isDone.isDone === true
+      })
+      setCountTaskIsDone(quantityTaskIsDone.length)
     }
     setLocalStorage()
   }, [tasks])
@@ -118,7 +113,7 @@ export function OffLineTodo() {
             key={task.uuid}
             task={task}
             onDeleteTask={deleteTask}
-            // onCountTaskDone={changeTaskIsDone}
+            onCountTaskDone={changeTaskIsDone}
           />
         ))}
       </div>

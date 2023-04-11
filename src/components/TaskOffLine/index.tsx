@@ -1,5 +1,4 @@
 import { Trash } from 'phosphor-react'
-import { useState } from 'react'
 import { Button } from '../Button'
 import { Checkbox } from '../Checkbox'
 import { Text } from '../Text'
@@ -11,32 +10,30 @@ interface TodoProps {
 interface TaskProps {
   task: TodoProps
   onDeleteTask: (task: string) => void
-
-  // onCountTaskDone: (task: string) => void
+  onCountTaskDone: (task: string) => void
 }
 
 export function TaskOffLine({
   task,
-
   onDeleteTask,
-}: // onCountTaskDone,
-  TaskProps) {
-  const [taskIsDone, setTaskIsDone] = useState(false)
+  onCountTaskDone,
+}: TaskProps) {
   function handleDeleteTask() {
     onDeleteTask(task.uuid)
   }
   function handleCountTaskDone(task: string) {
-    setTaskIsDone((prevState) => prevState!)
-    // onCountTaskDone(task)
+    onCountTaskDone(task)
   }
-
   return (
     <div className="bg-gray-500 mb-3 rounded flex  justify-start items-center gap-4 p-4">
       <div>
-        <Checkbox onCheckedChange={() => handleCountTaskDone(task.uuid)} />
+        <Checkbox
+          onCheckedChange={() => handleCountTaskDone(task.uuid)}
+          checked={task.isDone}
+        />
       </div>
       <div className="w-full">
-        <Text isDone={taskIsDone}>{task.description}</Text>
+        <Text isDone={task.isDone}>{task.description}</Text>
       </div>
       <Button.Root
         size="sm"
