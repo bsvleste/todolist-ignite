@@ -3,36 +3,40 @@ import { useState } from 'react'
 import { Button } from '../Button'
 import { Checkbox } from '../Checkbox'
 import { Text } from '../Text'
-
+interface TodoProps {
+  description: string
+  isDone: boolean
+  uuid: string
+}
 interface TaskProps {
-  task: string
+  task: TodoProps
   onDeleteTask: (task: string) => void
 
-  onCountTaskDone: (count: boolean) => void
+  // onCountTaskDone: (task: string) => void
 }
 
 export function TaskOffLine({
   task,
 
   onDeleteTask,
-  onCountTaskDone,
-}: TaskProps) {
+}: // onCountTaskDone,
+  TaskProps) {
   const [taskIsDone, setTaskIsDone] = useState(false)
   function handleDeleteTask() {
-    onDeleteTask(task)
+    onDeleteTask(task.uuid)
   }
-  function handleCountTaskDone(e: boolean) {
-    setTaskIsDone(e)
-    onCountTaskDone(e)
+  function handleCountTaskDone(task: string) {
+    setTaskIsDone((prevState) => prevState!)
+    // onCountTaskDone(task)
   }
 
   return (
     <div className="bg-gray-500 mb-3 rounded flex  justify-start items-center gap-4 p-4">
       <div>
-        <Checkbox onCheckedChange={handleCountTaskDone} />
+        <Checkbox onCheckedChange={() => handleCountTaskDone(task.uuid)} />
       </div>
       <div className="w-full">
-        <Text isDone={taskIsDone}>{task}</Text>
+        <Text isDone={taskIsDone}>{task.description}</Text>
       </div>
       <Button.Root
         size="sm"

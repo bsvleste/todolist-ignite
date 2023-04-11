@@ -1,44 +1,65 @@
+import { uuidv4 } from '@firebase/util'
 import { PlusCircle } from 'phosphor-react'
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { isAuthenticated } from '../../utils/authenticated'
+import { FormEvent, useEffect, useState } from 'react'
+
 import { Button } from '../Button'
 import { TaskOffLine } from '../TaskOffLine'
 import { Text } from '../Text'
 import { TextInput } from '../TextInput'
 import { TodoEmpty } from '../TodoEmpty'
 
+interface TodoProps {
+  description: string
+  isDone: boolean
+  uuid: string
+}
 export function OffLineTodo() {
-  const navigate = useNavigate()
-  const [tasks, setTasks] = useState<string[]>([])
+  const [tasks, setTasks] = useState<TodoProps[]>([])
   const [newTask, setNewTask] = useState('')
   const [countTaskIsDone, setCountTaskIsDone] = useState(0)
   const isInputTaskIsEmpty = newTask.length === 0
   const isTaskEmpty = tasks.length === 0
   const myLocalTasks = localStorage.getItem('app:todoListOffLine')
+
   function handleCreateTask(event: FormEvent) {
     event.preventDefault()
-    setTasks((tasks) => [newTask, ...tasks])
+    const createNewTask: TodoProps = {
+      uuid: uuidv4(),
+      description: newTask,
+      isDone: false,
+    }
+    setTasks((tasks) => [createNewTask, ...tasks])
     setNewTask('')
   }
 
-  function handleCreateNewTask(event: ChangeEvent<HTMLInputElement>) {
-    setNewTask(event.target.value)
+  function handleCreateNewTask(description: string) {
+    setNewTask(description)
   }
   function deleteTask(taskToDelete: string) {
     // imutabilidade => as variáveis não sofrem mutação, nós criamos um novo valor (um novo espaço na memória)
-    const taskWithoutDeleteOne = tasks.filter((task) => {
-      return task !== taskToDelete
-    })
-    setTasks(taskWithoutDeleteOne)
+
+    setTasks((preveState) =>
+      preveState.filter((task) => {
+        return task.uuid !== taskToDelete
+      }),
+    )
   }
-  function countTaskDones(count: boolean) {
-    if (count) {
-      setCountTaskIsDone((countTaskIsDone) => countTaskIsDone + 1)
-    } else {
-      setCountTaskIsDone((countTaskIsDone) => countTaskIsDone - 1)
-    }
-  }
+  // function changeTaskIsDone(task: string) {
+  //   const taskIsDone = [...tasks]
+  //   const changeTaskIsDone = taskIsDone.find(
+  //     (changeIsDone) => changeIsDone.uuid === task,
+  //   )
+  //   // setTasks((prevSate) => prevSate.findIndex((e) => { }))
+  //   setCountTaskIsDone(changeTaskIsDone)
+  //   console.log(changeTaskIsDone)
+  //   // taskIsDone.isDone = true
+  //   // setTasks((prevState) => [...prevState, taskIsDone])
+  //   // if (count) {
+  //   //   setCountTaskIsDone((countTaskIsDone) => countTaskIsDone + 1)
+  //   // } else {
+  //   //   setCountTaskIsDone((countTaskIsDone) => countTaskIsDone - 1)
+  //   // }
+  // }
   useEffect(() => {
     if (myLocalTasks) {
       setTasks(JSON.parse(myLocalTasks))
@@ -50,14 +71,7 @@ export function OffLineTodo() {
     }
     setLocalStorage()
   }, [tasks])
-  useEffect(() => {
-    if (isAuthenticated()) {
-      navigate('/')
-    }
-  }, [])
-  if (isAuthenticated()) {
-    return <h1>isLoading</h1>
-  }
+
   return (
     <div className=" mx-3 sm:max-w-3xl sm:m-auto -mt-8 mb-6 sm:-mt-8 sm:mb-6">
       <form action="" onSubmit={handleCreateTask}>
@@ -65,7 +79,7 @@ export function OffLineTodo() {
           <TextInput.Root>
             <TextInput.Input
               placeholder="Digite sua tarefa"
-              onChange={handleCreateNewTask}
+              onChange={(e) => handleCreateNewTask(e.target.value)}
               value={newTask}
             />
           </TextInput.Root>
@@ -101,10 +115,10 @@ export function OffLineTodo() {
         {isTaskEmpty && <TodoEmpty />}
         {tasks.map((task) => (
           <TaskOffLine
-            key={task}
+            key={task.uuid}
             task={task}
             onDeleteTask={deleteTask}
-            onCountTaskDone={countTaskDones}
+            // onCountTaskDone={changeTaskIsDone}
           />
         ))}
       </div>
