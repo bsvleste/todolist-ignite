@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { PaperPlaneTilt, Envelope, LockKeyOpen } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -10,7 +10,6 @@ import { auth } from '../../utils/firebaseConfig'
 import { useNavigate } from 'react-router-dom'
 
 import { isAuthenticated } from '../../utils/authenticated'
-import { TextInput } from '../../components/TextInput'
 
 const signinRegisterForm = z.object({
   email: z.string().email().nonempty('O email é obrigatorio'),
@@ -21,13 +20,12 @@ const signinRegisterForm = z.object({
 })
 type SigninFormData = z.infer<typeof signinRegisterForm>
 export function Signin() {
-  const input = useRef<HTMLInputElement>(null)
   const [erroLogin, setErroLogin] = useState(false)
   const navigate = useNavigate()
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
+    formState: { isSubmitting },
   } = useForm<SigninFormData>({
     resolver: zodResolver(signinRegisterForm),
   })
@@ -41,6 +39,7 @@ export function Signin() {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         data.email,
+
         data.password,
       )
       console.log(userCredential)
@@ -57,7 +56,7 @@ export function Signin() {
         JSON.stringify(localStorageCredentias),
       )
       setErroLogin(false)
-      navigate('/todo')
+      navigate('/')
     } catch (error) {
       setErroLogin(true)
     }
@@ -73,41 +72,27 @@ export function Signin() {
         className="flex justify-center items-start flex-col gap-4 max-w-md w-11/12 h-[500px] px-4 bg-gray-400  mx-3 rounded-lg"
       >
         {erroLogin && <h2>Email ou senha Invalidos</h2>}
-        {errors.email ? (
-          <Text size="sm" errorMessage={true}>
-            {errors.email?.message}
-          </Text>
-        ) : (
-          <Text>Email</Text>
-        )}
-        <TextInput.Root>
-          <TextInput.Input
-            autoComplete="off"
-            placeholder="Digite o seu email"
+
+        <div className="flex items-center gap-3 py-4 px-3 h-14 rounded-lg w-full bg-gray-500 focus-within:ring-1 ring-gray-500">
+          <Envelope size={32} color="#4d4d4d" />
+          <input
             {...register('email')}
+            type="email"
+            placeholder="Digite seu email"
+            className="bg-transparent flex-1 outline-none text-gray-100 text-sx placeholder:text-gray-300 focus:text-gray-100 "
           />
-        </TextInput.Root>
-        {errors.password ? (
-          <Text size="sm" errorMessage={true}>
-            {errors.password?.message}
-          </Text>
-        ) : (
-          <Text>Password</Text>
-        )}
-        <TextInput.Root erros={!!errors.password}>
-          <TextInput.Input
-            autoComplete="off"
-            placeholder="********************"
-            type="password"
+        </div>
+        <div className="flex items-center gap-3 py-4 px-3 h-14 rounded-lg w-full bg-gray-500 focus-within:ring-1 ring-gray-500">
+          <LockKeyOpen size={32} color="#4d4d4d" />
+          <input
             {...register('password')}
+            type="password"
+            placeholder="********"
+            className="bg-transparent flex-1 outline-none text-gray-100 text-sx placeholder:text-gray-300 focus:text-gray-100 "
           />
-        </TextInput.Root>
+        </div>
         <div className="mt-8 w-full">
-          <Button.Root
-            type="submit"
-            size="lg"
-            disabled={!isValid || isSubmitting}
-          >
+          <Button.Root type="submit" size="lg" disabled={isSubmitting}>
             <Text>Logar</Text>
             <Button.Icon>
               <PaperPlaneTilt />
