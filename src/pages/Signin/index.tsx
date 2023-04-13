@@ -1,16 +1,16 @@
-import { useEffect, useState } from 'react'
-import { PaperPlaneTilt } from 'phosphor-react'
+import React, { useEffect, useRef, useState } from 'react'
+import { PaperPlaneTilt, Envelope, LockKeyOpen } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '../../components/Button'
 import { Text } from '../../components/Text'
-import { TextInput } from '../../components/TextInput'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../utils/firebaseConfig'
 import { useNavigate } from 'react-router-dom'
 
 import { isAuthenticated } from '../../utils/authenticated'
+import { TextInput } from '../../components/TextInput'
 
 const signinRegisterForm = z.object({
   email: z.string().email().nonempty('O email é obrigatorio'),
@@ -21,6 +21,7 @@ const signinRegisterForm = z.object({
 })
 type SigninFormData = z.infer<typeof signinRegisterForm>
 export function Signin() {
+  const input = useRef<HTMLInputElement>(null)
   const [erroLogin, setErroLogin] = useState(false)
   const navigate = useNavigate()
   const {
@@ -40,7 +41,6 @@ export function Signin() {
       const userCredential = await signInWithEmailAndPassword(
         auth,
         data.email,
-
         data.password,
       )
       console.log(userCredential)
@@ -57,7 +57,7 @@ export function Signin() {
         JSON.stringify(localStorageCredentias),
       )
       setErroLogin(false)
-      navigate('/')
+      navigate('/todo')
     } catch (error) {
       setErroLogin(true)
     }
