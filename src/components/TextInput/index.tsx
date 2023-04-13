@@ -1,4 +1,4 @@
-import { forwardRef, InputHTMLAttributes, ReactNode } from 'react'
+import { InputHTMLAttributes, ReactNode } from 'react'
 import clsx from 'clsx'
 import { Slot } from '@radix-ui/react-slot'
 
@@ -11,6 +11,7 @@ export interface TextInputIconProps
   children: ReactNode
 }
 export interface TextInputInputProps
+  // eslint-disable-next-line prettier/prettier
   extends InputHTMLAttributes<HTMLInputElement> { }
 
 function TextInputRoot(props: TextInputRootsProps) {
@@ -33,20 +34,16 @@ function TextInputIcon({ children }: TextInputIconProps) {
   return <Slot className="w-6 h-6 text-gray-300">{children}</Slot>
 }
 
-const TextInputInput = forwardRef<HTMLInputElement>(
-  (props: TextInputInputProps, ref) => {
-    return (
-      <input
-        ref={ref}
-        className={clsx(
-          'bg-transparent flex-1 outline-none text-gray-100 text-sx placeholder:text-gray-300 focus:text-gray-100 ',
-        )}
-        {...props}
-      />
-    )
-  },
-)
-
+function TextInputInput(props: TextInputInputProps) {
+  return (
+    <input
+      className={clsx(
+        'bg-transparent flex-1 outline-none text-gray-100 text-sx placeholder:text-gray-300 focus:text-gray-100 ',
+      )}
+      {...props}
+    />
+  )
+}
 TextInputRoot.displayName = 'TextInput.Root'
 TextInputIcon.displayName = 'TextInput.Icon'
 TextInputInput.displayName = 'TextInput.Input'

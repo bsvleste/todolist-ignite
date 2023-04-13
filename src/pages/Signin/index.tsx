@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import { PaperPlaneTilt } from 'phosphor-react'
+import { Envelope, LockKeyOpen, PaperPlaneTilt } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '../../components/Button'
 import { Text } from '../../components/Text'
-import { TextInput } from '../../components/TextInput'
+
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../utils/firebaseConfig'
@@ -26,7 +26,7 @@ export function Signin() {
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isValid },
+    formState: { isSubmitting, isValid },
   } = useForm<SigninFormData>({
     resolver: zodResolver(signinRegisterForm),
   })
@@ -73,35 +73,24 @@ export function Signin() {
         className="flex justify-center items-start flex-col gap-4 max-w-md w-11/12 h-[500px] px-4 bg-gray-400  mx-3 rounded-lg"
       >
         {erroLogin && <h2>Email ou senha Invalidos</h2>}
-        {errors.email ? (
-          <Text size="sm" errorMessage={true}>
-            {errors.email?.message}
-          </Text>
-        ) : (
-          <Text>Email</Text>
-        )}
-        <TextInput.Root>
-          <TextInput.Input
-            autoComplete="off"
-            placeholder="Digite o seu email"
+        <div className="flex items-center gap-3 py-4 px-3 h-14 rounded-lg w-full bg-gray-500 focus-within:ring-1 ring-gray-500">
+          <Envelope size={32} color="#4d4d4d" />
+          <input
             {...register('email')}
+            type="email"
+            placeholder="Digite seu email"
+            className="bg-transparent flex-1 outline-none text-gray-100 text-sx placeholder:text-gray-300 focus:text-gray-100 "
           />
-        </TextInput.Root>
-        {errors.password ? (
-          <Text size="sm" errorMessage={true}>
-            {errors.password?.message}
-          </Text>
-        ) : (
-          <Text>Password</Text>
-        )}
-        <TextInput.Root erros={!!errors.password}>
-          <TextInput.Input
-            autoComplete="off"
-            placeholder="********************"
-            type="password"
+        </div>
+        <div className="flex items-center gap-3 py-4 px-3 h-14 rounded-lg w-full bg-gray-500 focus-within:ring-1 ring-gray-500">
+          <LockKeyOpen size={32} color="#4d4d4d" />
+          <input
             {...register('password')}
+            type="password"
+            placeholder="********"
+            className="bg-transparent flex-1 outline-none text-gray-100 text-sx placeholder:text-gray-300 focus:text-gray-100 "
           />
-        </TextInput.Root>
+        </div>
         <div className="mt-8 w-full">
           <Button.Root
             type="submit"
@@ -118,7 +107,7 @@ export function Signin() {
             <a href="/signup" className="text-blue">
               Crie uma conta
             </a>
-            <a href="/welcome" className="text-gray-700">
+            <a href="/" className="text-gray-700">
               Accesar sem conta
             </a>
           </div>
