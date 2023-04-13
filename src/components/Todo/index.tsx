@@ -87,7 +87,6 @@ export function Todo() {
           </TextInput.Root>
 
           <Button.Root disabled={isInputTaskIsEmpty}>
-            <Text>Criar</Text>
             <Button.Icon>
               <PlusCircle />
             </Button.Icon>
