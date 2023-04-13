@@ -1,6 +1,7 @@
 import { uuidv4 } from '@firebase/util'
-import { PlusCircle } from 'phosphor-react'
+import { PaperPlaneTilt, PlusCircle } from 'phosphor-react'
 import { FormEvent, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { Button } from '../Button'
 import { TaskOffLine } from '../TaskOffLine'
@@ -14,6 +15,7 @@ interface TodoProps {
   uuid: string
 }
 export function OffLineTodo() {
+  const navigate = useNavigate()
   const [tasks, setTasks] = useState<TodoProps[]>([])
   const [newTask, setNewTask] = useState('')
   const [countTaskIsDone, setCountTaskIsDone] = useState(0)
@@ -117,6 +119,13 @@ export function OffLineTodo() {
           />
         ))}
       </div>
+
+      <Button.Root size="lg" onClick={() => navigate('/signin')}>
+        <Text>Logar</Text>
+        <Button.Icon>
+          <PaperPlaneTilt />
+        </Button.Icon>
+      </Button.Root>
     </div>
   )
 }
