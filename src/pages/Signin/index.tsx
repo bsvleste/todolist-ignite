@@ -11,6 +11,7 @@ import { auth } from '../../utils/firebaseConfig'
 import { useNavigate } from 'react-router-dom'
 
 import { isAuthenticated } from '../../utils/authenticated'
+import { TextInput } from '../../components/TextInput'
 
 const signinRegisterForm = z.object({
   email: z.string().email().nonempty('O email é obrigatorio'),
@@ -74,7 +75,29 @@ export function Signin() {
         className="flex justify-center items-start flex-col gap-4 max-w-md w-11/12 h-[500px] px-4 bg-gray-400  mx-3 rounded-lg"
       >
         {erroLogin && <h2>Email ou senha Invalidos</h2>}
-        <div className="flex items-center gap-3 py-4 px-3 h-14 rounded-lg w-full bg-gray-500 focus-within:ring-1 ring-gray-500">
+        <Text>Email</Text>
+        <TextInput.Root>
+          <TextInput.Icon>
+            <Envelope size={32} color="#4d4d4d" />
+          </TextInput.Icon>
+          <TextInput.Input
+            type="email"
+            {...register('email')}
+            placeholder="Digite seu email"
+          />
+        </TextInput.Root>
+        <Text>Password</Text>
+        <TextInput.Root>
+          <TextInput.Icon>
+            <LockKeyOpen size={32} color="#4d4d4d" />
+          </TextInput.Icon>
+          <TextInput.Input
+            type="password"
+            {...register('password')}
+            placeholder="*************"
+          />
+        </TextInput.Root>
+        {/*  <div className="flex items-center gap-3 py-4 px-3 h-14 rounded-lg w-full bg-gray-500 focus-within:ring-1 ring-gray-500">
           <Envelope size={32} color="#4d4d4d" />
           <input
             {...register('email')}
@@ -82,8 +105,8 @@ export function Signin() {
             placeholder="Digite seu email"
             className="bg-transparent flex-1 outline-none text-gray-100 text-sx placeholder:text-gray-300 focus:text-gray-100 "
           />
-        </div>
-        <div className="flex items-center gap-3 py-4 px-3 h-14 rounded-lg w-full bg-gray-500 focus-within:ring-1 ring-gray-500">
+        </div> */}
+        {/* <div className="flex items-center gap-3 py-4 px-3 h-14 rounded-lg w-full bg-gray-500 focus-within:ring-1 ring-gray-500">
           <LockKeyOpen size={32} color="#4d4d4d" />
           <input
             {...register('password')}
@@ -91,7 +114,7 @@ export function Signin() {
             placeholder="********"
             className="bg-transparent flex-1 outline-none text-gray-100 text-sx placeholder:text-gray-300 focus:text-gray-100 "
           />
-        </div>
+        </div> */}
         <div className="mt-8 w-full">
           <Button.Root
             type="submit"
