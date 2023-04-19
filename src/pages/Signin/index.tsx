@@ -8,7 +8,7 @@ import { Text } from '../../components/Text'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { auth } from '../../utils/firebaseConfig'
-import { useNavigate } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 
 import { isAuthenticated } from '../../utils/authenticated'
 import { TextInput } from '../../components/TextInput'
@@ -128,9 +128,12 @@ export function Signin() {
           </Button.Root>
 
           <div className="mt-4 text-sm flex justify-between w-full  ">
-            <a href="/signup" className="text-blue">
+            <NavLink to="/signup" className="text-blue">
+              {/* <a href="/signup" className="text-blue">
               Crie uma conta
-            </a>
+            </a> */}
+              Criar conta
+            </NavLink>
             <a href="/" className="text-gray-700">
               Accesar sem conta
             </a>
