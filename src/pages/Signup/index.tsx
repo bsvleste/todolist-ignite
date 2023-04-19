@@ -40,6 +40,7 @@ export function Signup() {
         data.email,
         data.password,
       ).catch((err) => console.log(err))
+      console.log(data)
       await updateProfile(auth.currentUser!, { displayName: data.name }).catch(
         (err) => console.log(err),
       )
@@ -73,7 +74,6 @@ export function Signup() {
           <TextInput.Input
             placeholder="Digite o nome da tarefa"
             {...register('name')}
-            autoComplete="off"
           />
         </TextInput.Root>
         {errors.email ? (
@@ -99,7 +99,6 @@ export function Signup() {
         )}
         <TextInput.Root erros={!!errors.password}>
           <TextInput.Input
-            autoComplete="off"
             placeholder="********************"
             type="password"
             {...register('password')}
